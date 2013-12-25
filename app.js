@@ -15,10 +15,10 @@ app.use(expressValidator());
 
 // Create mysql connection pool
 app.dbPool   = mysql.createPool({
-  host     : 'localhost',
+  host     : '10.18.200.105',
   port	   : 3306,
-  user     : 'root',
-  password : '1234aa',
+  user     : 'spm',
+  password : 'sudo@#',
   database: "redmine",
   multipleStatements: true
 });
