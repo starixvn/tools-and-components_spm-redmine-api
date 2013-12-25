@@ -5,6 +5,7 @@
 var express = require('express'),
 			  util				= require('util'),
 			  mysql				= require('mysql'),
+			  validators		= require('express-validator/node_modules/validator/lib/validators'),
 			  expressValidator	= require('express-validator');
 			  
 var app = express();
@@ -18,10 +19,12 @@ app.dbPool   = mysql.createPool({
   port	   : 3306,
   user     : 'root',
   password : '1234aa',
-  database: "spm"
+  database: "redmine",
+  multipleStatements: true
 });
 
 app.util = util;
+app.validators = validators;
 
 // Index host
 app.get('/', function(req, res){	
