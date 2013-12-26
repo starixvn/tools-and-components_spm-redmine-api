@@ -15,7 +15,7 @@ app.use(expressValidator());
 
 // Create mysql connection pool
 app.dbPool   = mysql.createPool({
-  host     : '10.18.200.105',
+  host     : 'localhost',
   port	   : 3306,
   user     : 'spm',
   password : 'sudo@#',
