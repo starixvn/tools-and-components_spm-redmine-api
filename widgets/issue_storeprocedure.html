@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html>
+	
+	<head>
+		<title>Store procedures by issue widgets</title>
+
+		<link rel="stylesheet" type="text/css" href="/assets/stylesheets/editablegrid-2.0.1.css" />
+		<script src="/assets/javascripts/editablegrid-2.0.1.js"></script>
+
+		<style>
+			body { font-family:'lucida grande', tahoma, verdana, arial, sans-serif; font-size:11px; }
+			h1 { font-size: 15px; }
+			a { color: #548dc4; text-decoration: none; }
+			a:hover { text-decoration: underline; }
+			table.grid { border-collapse: collapse; border: 1px solid #CCB; width: 800px; }
+			table.grid td, table.testgrid th { padding: 5px; border: 1px solid #E0E0E0; }
+			table.grid th { background: #E5E5E5; text-align: left; }
+			input.invalid { background: red; color: #FDFDFD; }
+		</style>
+
+
+	</head>
+	<body>
+		
+		<div id="storeprocedure">&nbsp;</div>
+		
+		<script>
+			window.onload = function() {
+				editableGrid = new EditableGrid("storeprocedureJSON"); 
+				editableGrid.tableLoaded = function() { this.renderGrid("storeprocedure", "grid"); };
+				editableGrid.loadJSON("storeprocedure.json");
+			};
+		</script>
+
+	</body>
+	
+</html>
