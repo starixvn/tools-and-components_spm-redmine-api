@@ -13,7 +13,7 @@ module.exports = function(app){
 			else {
 				res.send(err, result || 500);
 			}
-		});		
+		});
 	});
 	
 	// spm_databases_delete

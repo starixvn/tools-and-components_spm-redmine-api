@@ -1,36 +1,80 @@
 <!DOCTYPE html>
-
 <html>
 	
 	<head>
 		<title>Store procedures by issue widgets</title>
-
-		<link rel="stylesheet" type="text/css" href="/assets/stylesheets/editablegrid-2.0.1.css" />
-		<script src="/assets/javascripts/editablegrid-2.0.1.js"></script>
-
-		<style>
-			body { font-family:'lucida grande', tahoma, verdana, arial, sans-serif; font-size:11px; }
-			h1 { font-size: 15px; }
-			a { color: #548dc4; text-decoration: none; }
-			a:hover { text-decoration: underline; }
-			table.grid { border-collapse: collapse; border: 1px solid #CCB; width: 800px; }
-			table.grid td, table.testgrid th { padding: 5px; border: 1px solid #E0E0E0; }
-			table.grid th { background: #E5E5E5; text-align: left; }
-			input.invalid { background: red; color: #FDFDFD; }
-		</style>
-
+		
+		<link rel="stylesheet" type="text/css" href="/assets/stylesheets/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" href="/assets/javascripts/jquery-handsontable/dist/jquery.handsontable.full.css" />
+		<link rel="stylesheet" type="text/css" href="/assets/javascripts/jquery-handsontable/extensions/jquery.handsontable.bootstrap.css" />
+		
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script src="/assets/javascripts/jquery-handsontable/dist/jquery.handsontable.full.js"></script>
+		<script src="/assets/javascripts/bootstrap.min.js"></script>
 
 	</head>
 	<body>
 		
-		<div id="storeprocedure">&nbsp;</div>
+		<div id="storeprocedures">&nbsp;</div>
 		
 		<script>
-			window.onload = function() {
-				editableGrid = new EditableGrid("storeprocedureJSON"); 
-				editableGrid.tableLoaded = function() { this.renderGrid("storeprocedure", "grid"); };
-				editableGrid.loadJSON("storeprocedure.json");
-			};
+			var storeprocedures_data = {};	
+	
+			var http = $.ajax({url:"storeprocedure.json", async: false, success:function(result){
+				if(!result.err) {
+					storeprocedures_data = JSON.parse(result);
+				}
+		  	}});
+		
+			$("#storeprocedures").handsontable({
+			  data: storeprocedures_data.data,
+			  startRows: 1,
+			  minSpareRows: 1,
+			  contextMenu: ["row_above", "row_below", 'remove_row', "hsep3", "undo", "redo"],
+			  manualColumnResize: true,
+			  columnSorting: true,
+			  persistentState: true,
+			  scrollH: 'auto',
+			  scrollV: 'auto',
+			  colHeaders: ["Server", "Database", "Name", "Is function", "Action", "Dev", "Status", "Description", "Last modified by"],
+			  columns: [
+			    {
+			      type: 'autocomplete',
+			      source: storeprocedures_data.servers,
+			      limit: 10,
+			      strict: true
+			    },
+			    {
+			      type: 'autocomplete',
+			      source: storeprocedures_data.databases,
+			      limit: 10,
+			      strict: true
+			    },
+				{ type: 'text'},
+				{ 
+					type: 'checkbox'
+				},
+				{ 
+					type: 'autocomplete',
+					source: storeprocedures_data.sp_actionTypes,
+					strict: true
+				},
+				{ 
+					type: 'autocomplete',
+					source: storeprocedures_data.devs,
+					strict: true
+				},
+				{ 
+					type: 'autocomplete',
+					source: storeprocedures_data.sp_statuses,
+					strict: true
+				},
+				{ type: 'text'},
+				{ type: 'text'}    
+			  ]
+			});
+			
+			$('#storeprocedures table').addClass('table table-hover table-striped table-bordered');
 		</script>
 
 	</body>

@@ -8,8 +8,9 @@
 		{
 			"Europe":{"be":"Belgium","fr":"France","uk":"Great-Britain","nl":"Nederland"},
 			"America":{"br":"Brazil","ca":"Canada","us":"USA"},
-			"Africa":{"ng":"Nigeria","za":"South-Africa","zw":"Zimbabwe"}}
-		},
+			"Africa":{"ng":"Nigeria","za":"South-Africa","zw":"Zimbabwe"}
+		}
+	},
 	{"name":"email","label":"EMAIL","datatype":"email","editable":true},
 	{"name":"freelance","label":"FREELANCE","datatype":"boolean","editable":true},
 	{"name":"lastvisit","label":"LAST VISIT","datatype":"date","editable":true}

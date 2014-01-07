@@ -12,7 +12,7 @@ module.exports = function(app){
 			else {
 				res.send(err, result || 500);
 			}
-		});	
+		});
 	});
 		
 	app.del('/user', function(req, res){
