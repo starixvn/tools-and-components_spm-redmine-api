@@ -18,17 +18,12 @@
 			{
 				display: none;
 			}
-			
-			div#storeprocedures
-			{
-
-			}
 		</style>
 
 	</head>
 	<body>
 		
-		<div id="storeprocedures">&nbsp;</div>
+		<div id="storeprocedures" style="height: 250px; overflow: auto">&nbsp;</div>
 		
 		<script>
 			var grid = null, 
@@ -201,18 +196,18 @@
 				if(!e.Name) {
 					return;
 				}
-				
+			
 				if(!e.ActionName) {
 					return;
 				}
-				
+			
 				if(!e.StatusName) {
 					return;
 				}
-				
+			
 				if(!e.Developer || !e.Developer.Username) {
 					return;
-				}
+				}			
 				
 				// Resolve id from name
 				if(e.Server) {
@@ -266,9 +261,9 @@
 					method: "POST",
 					success:function(result){
 						if(!isNaN(result + "") && result != 0) { // Insert success
-							if(data[index].Id === 0) {
+							if(data[index].Id  === 0) {
 								e.Id = data[index].Id = parseInt(result);
-							}
+							}				
 						}
 						else {
 							notify(result);

@@ -4,10 +4,21 @@
 
 var express = require('express'),
 			  util				= require('util'),
+			  https				= require('https'),
+			  fs				= require('fs'),
 			  mysql				= require('mysql'),
 			  validators		= require('express-validator/node_modules/validator/lib/validators'),
 			  expressValidator	= require('express-validator');
+		
 			  
+var key = fs.readFileSync('./ssl/privatekey.pem');
+var cert = fs.readFileSync('./ssl/certificate.pem');
+
+var https_options = {
+  key: key,
+  cert: cert
+};
+
 var app = express();
 
 app.use(express.compress());
@@ -35,4 +46,5 @@ require('./api/spm_storeprocedures')(app);
 require('./widgets/issue_storeprocedure')(app);
 
 // Start application
-app.listen(3000);
+var server = https.createServer(https_options, app).listen(3000);
+// app.listen(3000);
