@@ -202,6 +202,18 @@
 					return;
 				}
 				
+				if(!e.ActionName) {
+					return;
+				}
+				
+				if(!e.StatusName) {
+					return;
+				}
+				
+				if(!e.Developer || !e.Developer.Username) {
+					return;
+				}
+				
 				// Resolve id from name
 				if(e.Server) {
 					e.Server.Id = (_.find(source.servers, function(server){
@@ -254,9 +266,9 @@
 					method: "POST",
 					success:function(result){
 						if(!isNaN(result + "") && result != 0) { // Insert success
-							if(isNaN(data[index].Id + "")) {
-								data[index].Id = parseInt(result);
-							}							
+							if(data[index].Id === 0) {
+								e.Id = data[index].Id = parseInt(result);
+							}
 						}
 						else {
 							notify(result);
@@ -296,8 +308,8 @@
 				  persistentState: true,
 				  scrollH: 'auto',
 				  scrollV: 'auto',
-				  colWidths: [110, 115, 230, 25, 65, 105, 100, 150, 120],
-				  colHeaders: ["Server", "Database", "Name", "F", "Action", "Dev", "Status", "Description", "Last editor"],
+				  colWidths: [110, 115, 230, 75, 65, 105, 100, 150, 120],
+				  colHeaders: ["Server", "Database", "SP/Function", "Is Function", "Action", "Developer", "Status", "Description", "Modified by"],
 				  columns: [
 				    {
 				      type: 'autocomplete',
