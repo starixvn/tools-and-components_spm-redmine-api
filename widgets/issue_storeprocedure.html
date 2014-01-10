@@ -32,7 +32,7 @@
 		
 		<script>
 			var grid = null, 
-				refreshPeriod = 5000,
+				refreshPeriod = 10000,
 				loadTimer = 0,
 				source = null, 
 				data = [], 
@@ -55,8 +55,14 @@
 			       httpQueries[decode(match[1])] = decode(match[2]);
 			})();
 				
-			load = _.debounce(function(){
-				$.ajax({url:"storeprocedure.json", async: false, success:function(result){
+			load = _.debounce(function() {
+				
+				stopPolling();
+				
+				$.ajax({url:"storeprocedure.json", async: false, success:function(result) {
+					
+					startPolling();
+					
 					if(!result.err) {
 						var newSource = JSON.parse(result);
 						
