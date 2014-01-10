@@ -10,6 +10,7 @@ var express = require('express'),
 			  
 var app = express();
 
+app.use(express.compress());
 app.use(express.bodyParser());
 app.use(expressValidator());
 

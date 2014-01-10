@@ -7,7 +7,7 @@ var spmCache = new NodeCache( { stdTTL: 100, checkperiod: 120 } );
 module.exports = function(app){	
 	app.get('/widgets/issue/:id/storeprocedure.html', function(req, res){	
 		res.sendfile(__dirname + '/issue_storeprocedure.html');
-	});
+	});	
 	
 	app.get('/widgets/issue/:id/storeprocedure.json', function(req, res){	
 				
@@ -43,7 +43,7 @@ module.exports = function(app){
 					}					
 				});
 			}
-		});			
+		});		
 		
 		spmCache.get("databases", function(err, value){
 			if( !err && typeof value.databases === 'array' ){
@@ -74,7 +74,7 @@ module.exports = function(app){
 					}
 					else {
 						users = [];
-					}					
+					}	
 				});
 			}
 		});			
@@ -88,39 +88,26 @@ module.exports = function(app){
 				result.servers = [];
 				result.databases = [];
 				result.devs = [];
-				result.sp_statuses = repository.sp_statuses;
-				result.sp_actionTypes = repository.sp_actionTypes;
-				
-				_.each(stores, function(e, index, list){
-					result.data.push([
-						e.Server ? e.Server.Name : "",
-						e.Database ? e.Database.Name : "",						
-						e.Name,
-						e.IsFunction,
-						e.ActionName,
-						e.Developer || "",						
-						e.StatusName,
-						e.Description,						
-						e.Modifier ? e.Modifier.Username : "",
-						e.Id,						
-						e.Status,
-						e.Server ? e.Server.Id : 0,
-						e.Database ? e.Database.Id : 0
-					]);
-					
-				});
+				result.sp_statuses = [];
+				result.sp_actionTypes = repository.sp_actionTypes;				
+				result.data = stores;
+				result.issueId = req.sanitize('id').toInt();
 				
 				_.each(servers, function(e, index, list){
-					result.servers.push(e.Name);					
+					result.servers.push({id: e.Id, name: e.Name});					
 				});
 				
 				_.each(users, function(e, index, list){
-					result.devs.push(e.login);					
+					result.devs.push({id: e.id, name: e.login});					
 				});				
 				
 				_.each(databases, function(e, index, list){
-					result.databases.push(e.Name);					
-				});				
+					result.databases.push({id: e.Id, name: e.Name});					
+				});
+				
+				_.each(repository.sp_statuses, function(e, index, list){
+					result.sp_statuses.push({id: index + 1, name: e});					
+				});					
 			}
 			
 			res.end(JSON.stringify(result));

@@ -21,7 +21,7 @@ module.exports = function(app){
 				res.send(JSON.stringify(result));
 			}
 			else {
-				res.send(err, result || 500);
+				res.send(JSON.stringify(err), result || 500);
 			}
 		});
 
@@ -44,7 +44,7 @@ module.exports = function(app){
 				res.send(null, 200);
 			}
 			else {
-				res.send(err, result || 500);
+				res.send(JSON.stringify(err), result || 500);
 			}
 		});
 
@@ -83,7 +83,7 @@ module.exports = function(app){
 				res.send(result || null, 200);
 			}
 			else {
-				res.send(err, result || 500);
+				res.send(JSON.stringify(err), result || 500);
 			}
 		});		
 					
@@ -109,7 +109,7 @@ module.exports = function(app){
 				res.send(JSON.stringify(result), 200);
 			}
 			else {
-				res.send(err, result || 500);
+				res.send(JSON.stringify(err), result || 500);
 			}
 		});			
 	});
