@@ -171,7 +171,10 @@
 			};
 			
 			function getLoginUser() {
-				return httpQueries.author || "";
+				
+				return (_.find(source.devs, function(dev){
+						return dev.name === atob(httpQueries.author);
+					}) || {name: ""}).name;
 			}
 			
 			function del(e) {			
