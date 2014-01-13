@@ -23,7 +23,7 @@
 	</head>
 	<body>
 		
-		<div id="storeprocedures" style="height: 250px; overflow: auto">&nbsp;</div>
+		<div id="storeprocedures" style="height: 240px; overflow: auto">&nbsp;</div>
 		
 		<script>
 			var grid = null, 
@@ -287,8 +287,11 @@
 					var change = jQuery.extend(true, {}, e);
 					var insert = !data[e[0]];
 					var row = _(data[e[0]] || {}).assign(e[1], e[3]);
-					data[e[0]] = row;
-					insert_or_update(data[e[0]], e[0]);									
+					
+					if(!_.isEqual(e[2], e[3])){
+						data[e[0]] = row;
+						insert_or_update(data[e[0]], e[0]);						
+					}
 				});
 			}
 		
@@ -335,7 +338,7 @@
 						source: source.sp_actionTypes,
 						data: "ActionName",
 						strict: true,
-						filter: false
+						filter: true
 					},
 					{
 						type: 'autocomplete',
@@ -349,7 +352,7 @@
 						source: _.map(source.sp_statuses, function(e){ return e.name;}),
 						data: "StatusName",
 						strict: true,
-						filter: false
+						filter: true
 					},
 					{ 
 						type: 'text',
