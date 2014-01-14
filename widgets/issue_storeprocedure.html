@@ -76,7 +76,7 @@
 																	
 						_.each(data, function(e, i, list) {
 							
-							if(e == null) return;
+							if(e == null || e.Id === 0) return;
 							
 							var existedItem = _.find(newData, function(newDataItem){ return newDataItem.Id === e.Id;});
 							if(existedItem) {
@@ -109,11 +109,16 @@
 							}
 						});
 						
-						data = _.compact(data);
+						if(data.length > 1) {
+							_.each(data, function(e, i, list) {
+								if(e && e.Id === 0) {
+									data[i] = null;
+									return;
+								}
+							});
+						}						
 						
-						if(data.length === 0) {
-
-						}
+						data = _.compact(data);						
 						
 						// Exist grid and at least one valid item in array
 						if(grid && _.find(data, function(dataItem){ return dataItem && dataItem.Name != "" && dataItem.Name != null;})) {
