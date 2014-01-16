@@ -79,7 +79,7 @@ module.exports = function(app){
 			}
 		});			
 	
-		repository.spm_storeprocedures_getbyissueid(params, function(err, stores){
+		repository.spm_storeprocedures_getbyissueid2(params, function(err, stores){
 			var result = {};
 			result.err = err;
 			
