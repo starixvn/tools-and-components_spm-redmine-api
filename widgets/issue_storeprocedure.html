@@ -78,7 +78,12 @@
 							
 							if(e == null || e.Id === 0) return;
 							
-							var existedItem = _.find(newData, function(newDataItem){ return newDataItem.Id === e.Id;});
+							var existedItem = _.find(newData, function(newDataItem){ 
+								return (newDataItem.Id === e.Id) || 
+								(newDataItem.Server.Name === e.Server.Name && 
+									newDataItem.Database.Name === e.Database.Name && 
+									newDataItem.Name === e.Name);
+							});
 							if(existedItem) {
 								// Update existed
 								data[i] = existedItem;
@@ -187,13 +192,14 @@
 				var id = e.Id || 0;
 				if(id == 0 || isNaN(id)){ 
 					return;
-				}
+				}				
 				
 				$.ajax({
 					url:"/storeprocedure/" + id, 
 					async: true,
 					method: "DELETE",
 					success:function(result){
+						load();
 						startPolling();
 			  		}
 			  	});
@@ -276,6 +282,8 @@
 						else {
 							notify(result);
 						}
+						
+						load();
 						
 						startPolling();
 			  		}
