@@ -125,8 +125,8 @@
 						
 						data = _.compact(data);						
 						
-						// Exist grid and at least one valid item in array
-						if(grid && _.find(data, function(dataItem){ return dataItem && dataItem.Name != "" && dataItem.Name != null;})) {
+						// Bind data to existing grid
+						if(grid) {
 							grid.data('handsontable').loadData(data);
 						}
 					}
