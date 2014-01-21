@@ -33,24 +33,36 @@ module.exports = function(app){
 				servers = value.servers;
 			}
 			else {
-				repository.query('select * from spm_servers', function(err, result){
+				repository.query(
+					'select s.*, count(store.ServerId) as num from spm_servers as s \
+							left join spm_storeprocedures as store on s.Id = store.ServerId \
+	   						group by store.ServerId \
+	   						order by num desc'
+					
+					, function(err, result){
 					if(!err) {
 						servers = result;
 						spmCache.set('servers', result);
 					}
 					else {
 						servers = [];
-					}					
+					}
 				});
 			}
-		});		
+		});
 		
 		spmCache.get("databases", function(err, value){
 			if( !err && typeof value.databases === 'array' ){
 				databases = value.databases;
 			}
 			else {
-				repository.query('select * from spm_databases', function(err, result){
+				repository.query(
+					'select d.*, count(store.DatabaseId) as num from spm_databases as d \
+							left join spm_storeprocedures as store on d.Id = store.DatabaseId \
+	   						group by store.DatabaseId \
+	   						order by num desc'
+					
+					, function(err, result){
 					if(!err) {
 						databases = result;
 						spmCache.set('databases', result);
