@@ -21,11 +21,44 @@
 		</style>
 
 	</head>
-	<body>
+	<body scroll="no" style="overflow: hidden">
 		
-		<div id="storeprocedures" style="height: 240px; overflow: auto">&nbsp;</div>	
+		<div id="storeprocedures">&nbsp;</div>	
 		<script src="/widgets/javascripts/storeprocedure.js"></script>
 
+		<script>
+			var max_widget_height = 900;
+			adaptSize = _.debounce(function() {
+				var new_height = $( window ).height();				
+				new_height = (new_height > max_widget_height) ? max_widget_height : new_height;				
+				if(new_height > max_widget_height) {
+					$(document.body).css("padding", "5px");
+				}
+				else {
+					$(document.body).css("padding", "0px");
+				}
+				
+				storeprocedure.config({
+					selectLimit: (new_height > 300) ? 20 : 10
+				});
+				
+				$("#storeprocedures").height((new_height - 10) + "px");				
+				$("#storeprocedures").handsontable("render");
+				$("#storeprocedures").handsontable("selectCell", 0, 0);							
+				
+			}, 100);
+			
+			$(window).resize(function(){
+				adaptSize();
+			});
+			
+			$(document).ready(function(){
+				adaptSize();
+				storeprocedure.load();
+			});	
+			
+		</script>
+		
 	</body>
 	
 </html>
