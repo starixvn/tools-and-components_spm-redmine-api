@@ -114,7 +114,7 @@ module.exports = function(app){
 				});				
 				
 				_.each(databases, function(e, index, list){
-					result.databases.push({id: e.Id, name: e.Name});					
+					result.databases.push({id: e.Id, name: e.Name, serverId: e.ServerId});					
 				});
 				
 				_.each(repository.sp_statuses, function(e, index, list){

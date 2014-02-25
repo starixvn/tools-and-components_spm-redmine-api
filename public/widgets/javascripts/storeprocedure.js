@@ -24,11 +24,9 @@ var storeprocedure = window.storeprocedure = (function(){
 	    while (match = search.exec(query))
 	       httpQueries[decode(match[1])] = decode(match[2]);
 	})();
-		
-	load = _.debounce(function() {
-		
-		stopPolling();
-		
+
+	load = _.debounce(function() {		
+		stopPolling();		
 		$.ajax({url:"storeprocedure.json", async: false, success:function(result) {
 			
 			startPolling();
@@ -54,11 +52,7 @@ var storeprocedure = window.storeprocedure = (function(){
 					if(e == null || e.Id === 0) return;
 					
 					var existedItem = _.find(newData, function(newDataItem){ 
-						return (newDataItem.Id === e.Id) || 
-						(newDataItem.Server.Name === e.Server.Name && 
-							newDataItem.Issue.Id === e.Issue.Id && 
-							newDataItem.Database.Name === e.Database.Name && 
-							newDataItem.Name === e.Name);
+						return (newDataItem.Id === e.Id);
 					});
 					
 					if(existedItem) {
@@ -81,6 +75,7 @@ var storeprocedure = window.storeprocedure = (function(){
 					}
 					
 					var existedItem = _.find(data, function(dataItem){ return dataItem && dataItem.Id === e.Id;});
+					
 					if(!existedItem) {
 						if(!data[data.length - 1].Name) {
 							data.splice(data.length - 1, 1, e);
@@ -153,7 +148,8 @@ var storeprocedure = window.storeprocedure = (function(){
 		var limit = found.slice(0, selectLimit - 1);
 		if(found.length > selectLimit) {
 			limit.push("...");
-		}
+		};
+		
 		p(limit);
 	};
 	
@@ -203,7 +199,7 @@ var storeprocedure = window.storeprocedure = (function(){
 		// Resolve id from name
 		if(e.Server) {
 			e.Server.Id = (_.find(source.servers, function(server){
-				return server.name === e.Server.Name;
+				return $.trim(server.name) === $.trim(e.Server.Name);
 			}) || {}).id;
 		}
 		else {
@@ -211,8 +207,8 @@ var storeprocedure = window.storeprocedure = (function(){
 		}
 		
 		if(e.Database) {
-			e.Database.Id = (_.find(source.databases, function(database){
-				return database.name === e.Database.Name;
+			e.Database.Id = (_.find(source.databases, function(database) {
+				return $.trim(database.name) === $.trim(e.Database.Name) && database.serverId === e.Server.Id;
 			}) || {}).id;
 		}
 		else {
@@ -220,12 +216,12 @@ var storeprocedure = window.storeprocedure = (function(){
 		}
 		
 		e.Status = (_.find(source.sp_statuses, function(status){
-			return status.name === e.StatusName;
+			return $.trim(status.name) === $.trim(e.StatusName);
 		}) || {}).id;
 		
 		if(e.Developer) {
 			e.Developer.Id = (_.find(source.devs, function(dev){
-				return dev.name === e.Developer.Username;
+				return $.trim(dev.name) === $.trim(e.Developer.Username);
 			}) || {}).id;
 		}
 		else {
@@ -236,12 +232,12 @@ var storeprocedure = window.storeprocedure = (function(){
 			'id=' + e.Id, 
 			'serverId=' + e.Server.Id, 
 			'databaseId=' + e.Database.Id, 
-			'name=' + (e.Name || ""), 
+			'name=' + $.trim(e.Name || ""), 
 			'isFunction=' + (e.IsFunction || false), 
-			'actionName=' + (e.ActionName || ""),
-			'modifiedBy=' + getAuthor(),
+			'actionName=' + $.trim(e.ActionName || ""),
+			'modifiedBy=' + $.trim(getAuthor()),
 			'status=' + e.Status,
-			'description=' + (e.Description || ""),
+			'description=' + $.trim(e.Description || ""),
 			'issueId=' + source.issueId,
 			'developerId=' + (e.Developer.Id || 0)
 		];
@@ -252,9 +248,9 @@ var storeprocedure = window.storeprocedure = (function(){
 			method: "POST",
 			success:function(result){
 				if(!isNaN(result + "") && result != 0) { // Insert success
-					if(data[index].Id  === 0) {
+					if(data[index].Id  === 0 || data[index].Id  === undefined || data[index].Id  === null) {
 						e.Id = data[index].Id = parseInt(result);
-					}				
+					}
 				}
 				else {
 					notify(result);
@@ -297,24 +293,42 @@ var storeprocedure = window.storeprocedure = (function(){
 		  manualColumnResize: true,
 		  columnSorting: false,
 		  persistentState: true,
-		  scrollH: 'auto',
-		  scrollV: 'auto',
-		  stretchH: 'all',
 		  colWidths: [110, 115, 230, 75, 65, 105, 100, 150, 120],
 		  colHeaders: ["Server", "Database", "SP/Function", "Is Function", "Action", "Developer", "Status", "Description", "Modified by"],
 		  columns: [
 		    {
 		      type: 'autocomplete',
-		      source:  function(q, p) {
-					filterSelect(_.map(source.servers, function(e){ return e.name;}), q, p);
+		      source:  function(q, p) {		      		
+					filterSelect(_.map(source.servers, function(e){ 
+						return e.name;
+						}), q, p);
 			  },
 			  data: "Server.Name",
 		      allowInvalid: false			      
 		    },
 		    {
 		      type: 'autocomplete',
-		      source:  function(q, p) {
-					filterSelect(_.map(source.databases, function(e){ return e.name;}), q, p);
+		      source:  function(q, p) {		      	
+		      		// Filter database by serverId
+		      		var instance = $('#storeprocedures').handsontable('getInstance');
+		      		var pos = instance.getSelected();
+		      		var serverName = instance.getDataAtCell(pos[0], pos[1] - 1);
+		      		
+		      		var serverId = (_.find(source.servers, function(server){
+						return $.trim(server.name) === $.trim(serverName);
+					}) || {}).id;
+					
+		      		var reduce = _.filter(source.databases, function(database){ 
+		      			return database.serverId === serverId;
+		      			});
+		      		
+		      		if(reduce.length === 0) {
+		      			reduce = source.databases;
+		      		}
+		      		
+					filterSelect(_.map(reduce, function(e){ 
+						return e.name;
+						}), q, p);
 			  },
 			  data: "Database.Name",
 		      allowInvalid: false

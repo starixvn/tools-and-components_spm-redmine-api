@@ -11,8 +11,8 @@ var express = require('express'),
 			  expressValidator	= require('express-validator');
 		
 			  
-var key = fs.readFileSync('./ssl/privatekey.pem');
-var cert = fs.readFileSync('./ssl/certificate.pem');
+var key = fs.readFileSync('./ssl/server.key');
+var cert = fs.readFileSync('./ssl/server.crt');
 
 var https_options = {
   key: key,
