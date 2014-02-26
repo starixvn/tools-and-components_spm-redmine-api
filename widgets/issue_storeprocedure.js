@@ -1,8 +1,6 @@
 var repository = require('../lib/repository');
-var NodeCache = require("node-cache");
 var _ = require('underscore');
 
-var spmCache = new NodeCache( { stdTTL: 100, checkperiod: 120 } );
 
 module.exports = function(app){	
 	app.get('/widgets/issue/:id/storeprocedure.html', function(req, res){	
@@ -28,7 +26,7 @@ module.exports = function(app){
 		var databases = null;
 		var users = null;
 		
-		spmCache.get("servers", function(err, value){
+		app.cache.get("servers", function(err, value){
 			if( !err && typeof value.servers === 'array' ){
 				servers = value.servers;
 			}
@@ -42,7 +40,7 @@ module.exports = function(app){
 					, function(err, result){
 					if(!err) {
 						servers = result;
-						spmCache.set('servers', result);
+						app.cache.set('servers', result);
 					}
 					else {
 						servers = [];
@@ -51,7 +49,7 @@ module.exports = function(app){
 			}
 		});
 		
-		spmCache.get("databases", function(err, value){
+		app.cache.get("databases", function (err, value) {
 			if( !err && typeof value.databases === 'array' ){
 				databases = value.databases;
 			}
@@ -65,7 +63,7 @@ module.exports = function(app){
 					, function(err, result){
 					if(!err) {
 						databases = result;
-						spmCache.set('databases', result);
+						app.cache.set('databases', result);
 					}
 					else {
 						databases = [];
@@ -74,7 +72,7 @@ module.exports = function(app){
 			}
 		});		
 		
-		spmCache.get("users", function(err, value){
+		app.cache.get("users", function (err, value) {
 			if( !err && typeof value.users === 'object' ){
 				users = value.users;
 			}
@@ -82,7 +80,7 @@ module.exports = function(app){
 				repository.query('select id, login from users where INSTR(login, ".") > 0', function(err, result){
 					if(!err) {
 						users = result;
-						spmCache.set('users', result);
+						app.cache.set('users', result);
 					}
 					else {
 						users = [];
