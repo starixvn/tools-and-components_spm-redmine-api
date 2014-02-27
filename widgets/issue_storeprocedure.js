@@ -32,11 +32,7 @@ module.exports = function(app){
 			}
 			else {
 				repository.query(
-					'select s.*, count(store.ServerId) as num from spm_servers as s \
-							left join spm_storeprocedures as store on s.Id = store.ServerId \
-	   						group by store.ServerId \
-	   						order by num desc'
-					
+					'select * from spm_servers where isdeleted = 0'					
 					, function(err, result){
 					if(!err) {
 						servers = result;
@@ -55,11 +51,7 @@ module.exports = function(app){
 			}
 			else {
 				repository.query(
-					'select d.*, count(store.DatabaseId) as num from spm_databases as d \
-							left join spm_storeprocedures as store on d.Id = store.DatabaseId \
-	   						group by store.DatabaseId \
-	   						order by num desc'
-					
+					'select * from spm_databases where isdeleted = 0'					
 					, function(err, result){
 					if(!err) {
 						databases = result;
