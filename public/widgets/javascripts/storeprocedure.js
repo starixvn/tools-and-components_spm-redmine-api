@@ -26,6 +26,16 @@ var storeprocedure = window.storeprocedure = (function () {
     })();
 
     load = _.debounce(function () {
+    	
+    	// Check enable state via url
+    	var enable = location.href.indexOf("#open") != -1;
+    	if(!enable){
+    		refreshPeriod = 10000 * 1000;
+    	}
+    	else {
+    		refreshPeriod = 3000;
+    	};
+    	
         stopPolling();
         $.ajax({
             url: "storeprocedure.json", async: false, success: function (result) {
