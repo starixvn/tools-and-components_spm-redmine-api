@@ -26,16 +26,6 @@ var storeprocedure = window.storeprocedure = (function () {
     })();
 
     load = _.debounce(function () {
-    	
-    	// Check enable state via url
-    	var enable = location.href.indexOf("#open") != -1;
-    	if(!enable){
-    		refreshPeriod = 10000 * 1000;
-    	}
-    	else {
-    		refreshPeriod = 3000;
-    	};
-    	
         stopPolling();
         $.ajax({
             url: "storeprocedure.json", async: false, success: function (result) {
@@ -115,19 +105,7 @@ var storeprocedure = window.storeprocedure = (function () {
                 }
             }
         });
-    }, 50);
-
-    function startPolling() {
-        stopPolling();
-        loadTimer = setInterval(load, refreshPeriod);
-    };
-
-    function stopPolling() {
-        if (loadTimer !== 0) {
-            clearInterval(loadTimer);
-        }
-        loadTimer = 0;
-    };
+    }, 50);	
 
     // Set object property by path
     _.mixin({
@@ -410,6 +388,19 @@ var storeprocedure = window.storeprocedure = (function () {
 
     }, 100);
 
+
+    function startPolling() {
+        stopPolling();
+        loadTimer = setInterval(load, refreshPeriod);
+    };
+
+    function stopPolling() {
+        if (loadTimer !== 0) {
+            clearInterval(loadTimer);
+        }
+        loadTimer = 0;
+    };
+
     return {
         name: "",
         config: function (options) {
@@ -420,6 +411,25 @@ var storeprocedure = window.storeprocedure = (function () {
             load();
             setup();
             startPolling();
+            
+            // Start monitoring
+            setInterval(function(){
+		    	// Check enable state via url
+		    	var enable = location.href.indexOf("#open") != -1;
+		    	var refreshPeriod1 = refreshPeriod;
+		    	if(!enable){
+		    		refreshPeriod = 10000 * 1000;
+		    	}
+		    	else {
+		    		refreshPeriod = 3000;
+		    	};
+		    	
+		    	// Change state
+		    	if(refreshPeriod1 != refreshPeriod){
+		    		startPolling();
+		    	}
+		    	
+            }, 500);
         }
     };
 })();
